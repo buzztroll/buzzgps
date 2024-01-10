@@ -276,7 +276,7 @@ static int buzz_l_parse_gprmc(buzz_gps_raw_event_t * raw_event, buzz_gps_event_t
     buzz_gps_location_t * location;
 
     buzz_logger(BUZZ_INFO, "In RMC parser");
-    location = buzz_l_parse_out_location(raw_event->words, 7, raw_event->word_count, 3, 5, 4, 7);
+    location = buzz_l_parse_out_location(raw_event->words, 7, raw_event->word_count, 3, 5, 4, 6);
     if (location == NULL)
     {
         return BUZZ_GPS_ERROR;
