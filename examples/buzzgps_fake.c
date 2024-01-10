@@ -46,13 +46,13 @@ static void run_blocking(buzz_gps_handle_t gps_handle)
 }
 
 
-static void raw_cb(buzz_gps_raw_event_t * raw)
+static void raw_cb(buzz_gps_raw_event_t * raw, void * user_arg)
 {
     printf("Got raw event: %s\n", raw->sentence);
 }
 
 
-static void event_cb(buzz_gps_event_t * event)
+static void event_cb(buzz_gps_event_t * event, void * user_arg)
 {
     printf("got event\n");
     if (event->location != NULL)
@@ -71,7 +71,8 @@ static void run_async(buzz_gps_handle_t gps_handle)
         2,
         1,
         raw_cb,
-        event_cb);
+        event_cb,
+        NULL);
     if (rc != BUZZ_GPS_SUCCESS)
     {
         printf("ERROR\n");

@@ -37,6 +37,7 @@ typedef struct buzz_i_gps_handle_s {
 
     buzz_gps_raw_event_callback_t raw_cb;
     buzz_gps_event_callback_t event_cb;
+    void * user_arg;
 } buzz_i_gps_handle_t;
 
 
@@ -406,7 +407,7 @@ static void * buzz_l_gather_thread(void * arg)
                 /* for now send out the callbacks under lock */
                 if (gps_handle->raw_cb != NULL)
                 {
-                    gps_handle->raw_cb(&raw_event);
+                    gps_handle->raw_cb(&raw_event, gps_handle->user_arg);
                 }
                 rc = buzz_l_get_full_event(gps_handle, &raw_event, &event);
                 if (rc == BUZZ_GPS_SUCCESS)
@@ -441,7 +442,7 @@ static void * buzz_l_gather_thread(void * arg)
                     }
                     if (gps_handle->event_cb != NULL)
                     {
-                        gps_handle->event_cb(&event);
+                        gps_handle->event_cb(&event, gps_handle->user_arg);
                     }
                 }
                 waittime.tv_sec = gps_handle->interval_time + time(NULL);
@@ -540,7 +541,7 @@ int buzz_gps_get_event_blocking(
 
 
 int buzz_gps_get_last_known_location(
-    buzz_gps_handle_t gps_handle, buzz_gps_location_t ** out_location)
+    buzz_gps_handle_t gps_handle, buzz_gps_location_t * out_location)
 {
     int rc;
 
@@ -552,7 +553,8 @@ int buzz_gps_get_last_known_location(
         }
         else
         {
-            *out_location = gps_handle->last_location;
+            out_location->lattitude = gps_handle->last_location->lattitude;
+            out_location->longitude = gps_handle->last_location->longitude;
             rc = BUZZ_GPS_SUCCESS;
         }
     }
@@ -566,7 +568,8 @@ int buzz_gps_start(buzz_gps_handle_t gps_handle,
                    int interval_time,
                    int error_interval,
                    buzz_gps_raw_event_callback_t raw_cb,
-                   buzz_gps_event_callback_t event_cb)
+                   buzz_gps_event_callback_t event_cb,
+                   void * user_arg)
 {
     if (gps_handle->running)
     {
@@ -578,6 +581,7 @@ int buzz_gps_start(buzz_gps_handle_t gps_handle,
     {
         gps_handle->raw_cb = raw_cb;
         gps_handle->event_cb = event_cb;
+        gps_handle->user_arg = user_arg;
         gps_handle->interval_time = interval_time;
         gps_handle->error_interval = error_interval;
         gps_handle->running = 1;

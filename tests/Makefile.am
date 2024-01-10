@@ -1,6 +1,6 @@
-TESTS = test_blocking
-check_PROGRAMS = test_blocking
-test_blocking_SOURCES = test_blocking.c $(top_builddir)/src/buzz_gps.h
-test_blocking_LDADD = $(top_builddir)/src/libbuzzgps.a -lcmocka
-test_blocking_CFLAGS = -I$(top_builddir)/src/ $(CFLAGS)
+TESTS = basic_tests
+check_PROGRAMS = basic_tests
+basic_tests_SOURCES = basic_tests.c $(top_srcdir)/src/buzz_gps.h
+basic_tests_LDADD = $(top_builddir)/src/libbuzzgps.a -lcmocka
+basic_tests_CFLAGS = -I$(top_srcdir)/src/ $(CFLAGS)
 

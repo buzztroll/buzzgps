@@ -91,12 +91,12 @@ typedef struct buzz_gps_event_s
 /*
  * Callback signature for raw sentences
  */
-typedef void (*buzz_gps_raw_event_callback_t)(buzz_gps_raw_event_t * raw_event);
+typedef void (*buzz_gps_raw_event_callback_t)(buzz_gps_raw_event_t * raw_event, void * user_arg);
 
 /*
  * Callback for parsed information
  */
-typedef void (*buzz_gps_event_callback_t)(buzz_gps_event_t * event);
+typedef void (*buzz_gps_event_callback_t)(buzz_gps_event_t * event, void * user_arg);
 
 /*
  *  Initialize the GPS object
@@ -119,7 +119,8 @@ int buzz_gps_start(buzz_gps_handle_t gps_handle,
                    int interval_time,
                    int error_interval,
                    buzz_gps_raw_event_callback_t raw_cb,
-                   buzz_gps_event_callback_t event_cb);
+                   buzz_gps_event_callback_t event_cb,
+                   void * user_arg);
 
 /*
  * Stop reading GPS events 
@@ -130,7 +131,7 @@ int buzz_gps_stop(buzz_gps_handle_t gps_handle);
  * Get the last known GPS location
  */
 int buzz_gps_get_last_known_location(
-    buzz_gps_handle_t gps_handle, buzz_gps_location_t ** out_location);
+    buzz_gps_handle_t gps_handle, buzz_gps_location_t * out_location);
 
 /*
  * Block until a parsed event is ready. If this returns BUZZ_GPS_SUCCESS you

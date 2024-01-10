@@ -1,0 +1,26 @@
+name: GitHub Actions Test BuzzGPS
+run-name: ${{ github.actor }} commited a change the is being tested
+on: [push]
+jobs:
+  Linux-Build-Test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Install stuff
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcmocka-dev lcov
+      - run: make distclean || true
+      - run: autoreconf -if
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+      - run: ./configure --prefix=$(pwd)/INSTALL --enable-coverage
+      - run: make
+      - run: make check
+      - name: Upload Coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage
+          path: coverage/index.html
